@@ -1,7 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Linq;
-using UnityEditor.Recorder.Encoder;
 using UnityEditor.Recorder.Input;
 using UnityEngine;
 
@@ -44,9 +40,8 @@ namespace UnityEditor.Recorder
                 return;
             }
 
-            // Display selected encoder's fields, greyed out if not supported
-            using (new EditorGUI.DisabledScope(!mrs.EncoderSettings.SupportsCurrentPlatform()))
-                EditorGUILayout.PropertyField(m_EncoderSettings, true);
+            // Display selected encoder's fields
+            EditorGUILayout.PropertyField(m_EncoderSettings, true);
 
             // Expose CaptureAudio and CaptureAlpha from the MovieRecorderSettings but look at input and encoder capabilities
             if (mrs.EncoderSettings.CanCaptureAudio)

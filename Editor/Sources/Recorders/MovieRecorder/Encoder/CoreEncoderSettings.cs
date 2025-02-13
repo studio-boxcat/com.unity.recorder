@@ -280,12 +280,6 @@ namespace UnityEditor.Recorder.Encoder
         }
 
         /// <inheritdoc/>
-        public bool SupportsCurrentPlatform()
-        {
-            return true;
-        }
-
-        /// <inheritdoc/>
         bool IEquatable<CoreEncoderSettings>.Equals(CoreEncoderSettings other)
         {
             if (ReferenceEquals(null, other)) return false;
