@@ -55,13 +55,6 @@ namespace UnityEditor.Recorder
             }
         }
 
-        /// <summary>
-        /// Draws a delimiter between different GUI elements.
-        /// </summary>
-        protected static void DrawSeparator()
-        {
-        }
-
         /// <summary>Draws a foldout header.</summary>
         /// <param name="title"> The title of the header </param>
         /// <param name="state"> The state of the header </param>

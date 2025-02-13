@@ -138,7 +138,7 @@ namespace UnityEditor.Recorder
         {
             bool formatSupportAlpha = OutputFormat == ImageRecorderOutputFormat.PNG;
             bool inputSupportAlpha = imageInputSettings.SupportsTransparent;
-            return (formatSupportAlpha && inputSupportAlpha && !UnityHelpers.UsingURP());
+            return (formatSupportAlpha && inputSupportAlpha);
         }
 
         internal override void OnValidate()

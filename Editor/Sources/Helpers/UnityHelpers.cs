@@ -1,22 +1,10 @@
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using UnityEditor.PackageManager;
-using UnityEditor.PackageManager.Requests;
-using UnityEditor.Recorder.Encoder;
 using UnityEditor.Recorder.Input;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
-#if HDRP_AVAILABLE
-using UnityEngine.Rendering.HighDefinition;
-#endif
-#if URP_AVAILABLE
-using UnityEngine.Rendering.Universal;
-#endif
 using UnityObject = UnityEngine.Object;
 
 namespace UnityEditor.Recorder
@@ -112,54 +100,6 @@ namespace UnityEditor.Recorder
         }
 
         /// <summary>
-        /// Are we currently using the Universal Render Pipeline.
-        /// </summary>
-        /// <returns>bool</returns>
-        internal static bool UsingURP()
-        {
-            var pipelineAsset = GraphicsSettings.currentRenderPipeline;
-            var usingURP = pipelineAsset != null &&
-                (pipelineAsset.GetType().FullName.Contains("Universal") ||
-                    pipelineAsset.GetType().FullName.Contains("Lightweight"));
-            return usingURP;
-        }
-
-        internal static bool UsingURP2DRenderer()
-        {
-#if URP_AVAILABLE && UNITY_2023_2_OR_NEWER
-            var urp = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
-
-            if (urp == null)
-                return false;
-
-            foreach (var renderer in urp.renderers)
-            {
-                if (renderer == null)
-                    continue;
-
-                if (renderer.GetType().FullName.Contains("Renderer2D"))
-                    return true;
-            }
-            return false;
-#elif URP_AVAILABLE && !UNITY_2023_2_OR_NEWER
-            var urp = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
-            return urp.scriptableRenderer.GetType().FullName.Contains("Renderer2D");
-#else
-            return false;
-#endif
-        }
-
-        /// <summary>
-        /// Are we currently using the Legacy Render Pipeline.
-        /// </summary>
-        /// <returns>bool</returns>
-        internal static bool UsingLegacyRP()
-        {
-            var pipelineAsset = GraphicsSettings.currentRenderPipeline;
-            return pipelineAsset == null;
-        }
-
-        /// <summary>
         /// Returns True if a manual vertical flip is required, False otherwise.
         /// The decision is based on the user's intention as well as the characteristics of the current graphics API
         /// (OpenGL is flipped vertically compared to Metal & DirectX) and the type of capture source.
@@ -174,15 +114,9 @@ namespace UnityEditor.Recorder
             // We need to take several things into account: what the user expects, whether or not the rendering is made
             // on a GameView source, and whether or not the hardware is OpenGL.
             bool isGameView = captureSource is GameViewInput; // game view is already flipped
-            bool isCameraInputLegacyRP = captureSource is CameraInput && UsingLegacyRP(); // legacy RP has vflipped camera input
+            bool isCameraInputLegacyRP = captureSource is CameraInput; // legacy RP has vflipped camera input
 
-            // OpenGL causes a flipped image except if:
-            // * source is 360 camera
-            // * source is RenderTextureInput
-            // * source is RenderTextureSampler
-            // * source is CameraInput in a URP project
-            bool isFlippedBecauseOfOpenGL = !SystemInfo.graphicsUVStartsAtTop &&
-                !(captureSource is CameraInput && UsingURP());
+            bool isFlippedBecauseOfOpenGL = !SystemInfo.graphicsUVStartsAtTop;
 
             // The image will already be flipped if:
             // * the input comes from the GameView, OR

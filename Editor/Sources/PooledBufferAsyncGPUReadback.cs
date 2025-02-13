@@ -24,22 +24,6 @@ namespace UnityEditor.Recorder
             return req;
         }
 
-        public AsyncGPUReadbackRequest RequestGPUReadBack(RenderTexture tex, Action<AsyncGPUReadbackRequest> cb)
-        {
-            return RequestGPUReadBack(tex, tex.graphicsFormat, cb);
-        }
-
-        public void RegisterJobDependency(ref NativeArray<byte> buffer, JobHandle handle)
-        {
-            if (!bufferJobLocks.ContainsKey(buffer))
-            {
-                Debug.LogError("Buffer is not managed by this PooledBufferAsyncGPUReadback");
-                return;
-            }
-
-            bufferJobLocks[buffer] = handle;
-        }
-
         void GetAsyncBuffer(int width, int height, GraphicsFormat format, ref NativeArray<byte> buff)
         {
             NativeArray<byte> ret = default;

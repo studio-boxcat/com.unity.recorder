@@ -32,12 +32,9 @@ namespace UnityEditor.Recorder
         {
             EditorGUILayout.PropertyField(m_OutputFormat, Styles.FormatLabel);
             var imageSettings = (ImageRecorderSettings)target;
-            if (!UnityHelpers.UsingURP())
+            using (new EditorGUI.DisabledScope(!imageSettings.CanCaptureAlpha()))
             {
-                using (new EditorGUI.DisabledScope(!imageSettings.CanCaptureAlpha()))
-                {
-                    EditorGUILayout.PropertyField(m_CaptureAlpha, Styles.CaptureAlphaLabel);
-                }
+                EditorGUILayout.PropertyField(m_CaptureAlpha, Styles.CaptureAlphaLabel);
             }
 
             if ((ImageRecorderSettings.ImageRecorderOutputFormat)m_OutputFormat.enumValueIndex ==

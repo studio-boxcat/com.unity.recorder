@@ -8,16 +8,10 @@ namespace UnityEditor.Recorder
     static class FindObjectsHelper
     {
         internal static T[] FindObjectsByTypeWrapper<T>(
-#if UNITY_2023_1_OR_NEWER
             FindObjectsSortMode sortMode = FindObjectsSortMode.None
-#endif
         ) where T : Object
         {
-#if UNITY_2023_1_OR_NEWER
             return UnityEngine.Object.FindObjectsByType<T>(sortMode);
-#else
-            return UnityEngine.Object.FindObjectsOfType<T>();
-#endif
         }
     }
 

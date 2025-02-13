@@ -31,7 +31,6 @@ namespace UnityEditor.Recorder.Input
         /// <summary>
         /// Set the GameView to a custom resolution when the passed parameters are different from the current resolution.
         /// A width or height of 0 will be ignored.
-        /// In HDRP, this will reset the history data so cameras adapt to the change of resolution.
         /// </summary>
         public static void SetCustomSize(int width, int height)
         {

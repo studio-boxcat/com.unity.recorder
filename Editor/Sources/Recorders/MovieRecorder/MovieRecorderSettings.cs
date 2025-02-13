@@ -194,12 +194,6 @@ namespace UnityEditor.Recorder
             var errors = new List<string>();
             var data = GetRecordingContext();
             ValidateRecording(data, errors, warnings);
-            if (ImageInputSettings.SupportsTransparent && EncoderSettings.CanCaptureAlpha && captureAlpha)
-            {
-#if HDRP_AVAILABLE
-                HdrpHelper.CheckRenderPipelineAssetAlphaSupport(warnings);
-#endif
-            }
         }
 
         protected internal override bool HasErrors()

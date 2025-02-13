@@ -1,10 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-using Unity.Collections;
-using UnityEditor.Media;
-using UnityEngine;
 
 namespace UnityEditor.Recorder.Encoder
 {

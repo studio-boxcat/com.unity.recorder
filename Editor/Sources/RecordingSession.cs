@@ -1,9 +1,6 @@
 using System;
-using System.ComponentModel;
 using Unity.Profiling;
-using UnityEditor.Media;
 using UnityEngine;
-using UnityEngine.LowLevel;
 
 namespace UnityEditor.Recorder
 {
@@ -26,7 +23,6 @@ namespace UnityEditor.Recorder
         int m_SubFrameIndex = 0;
         int m_FrameIndex = 0;
         int m_InitialFrame = 0;
-        int m_FirstRecordedFrameCount = -1;
         float m_FPSTimeStart;
         float m_FPSNextTimeStart;
         int m_FPSNextFrameCount;
@@ -61,20 +57,6 @@ namespace UnityEditor.Recorder
         public int frameIndex
         {
             get { return m_FrameIndex; }
-        }
-
-        /// <summary>
-        /// The index of the current sub frame being processed.
-        /// </summary>
-        internal int subFrameIndex
-        {
-            get { return m_SubFrameIndex; }
-        }
-
-
-        internal int RecordedFrameSpan
-        {
-            get { return m_FirstRecordedFrameCount == -1 ? 0 : Time.renderedFrameCount - m_FirstRecordedFrameCount; }
         }
 
         /// <summary>
@@ -211,8 +193,6 @@ namespace UnityEditor.Recorder
 #endif
                         recorder.RecordFrame(this);
                         recorder.RecordedFramesCount++;
-                        if (recorder.RecordedFramesCount == 1)
-                            m_FirstRecordedFrameCount = Time.renderedFrameCount;
                     }
                     recorder.SignalInputsOfStage(ERecordingSessionStage.FrameDone, this);
                 }
@@ -286,37 +266,6 @@ namespace UnityEditor.Recorder
             m_FrameIndex++;
         }
 
-        // Don't start incrementing the subframe count until accumulation has been activated.
-        void IncrementSubFrameCount()
-        {
-#if HDRP_AVAILABLE
-            if (settings.IsAccumulationSupported() && settings is IAccumulation accumulation && accumulation.GetAccumulationSettings().CaptureAccumulation)
-            {
-                switch (settings.RecordMode)
-                {
-                    case RecordMode.FrameInterval:
-                    case RecordMode.SingleFrame:
-                        if (m_FrameIndex >= settings.StartFrame)
-                        {
-                            m_SubFrameIndex++;
-                        }
-                        break;
-                    case RecordMode.TimeInterval:
-                        if (currentFrameStartTS >= settings.StartTime)
-                        {
-                            m_SubFrameIndex++;
-                        }
-                        break;
-                    case RecordMode.Manual:
-                        m_SubFrameIndex++;
-                        break;
-                    default:
-                        throw new InvalidEnumArgumentException($"Unexpected record mode {settings.RecordMode}");
-                }
-            }
-#endif
-        }
-
         internal void PrepareNewFrame()
         {
             try
@@ -326,7 +275,6 @@ namespace UnityEditor.Recorder
                 currentFrameStartTS =
                     (Time.time / (Mathf.Approximately(Time.timeScale, 0f) ? 1f : Time.timeScale)) -
                     recordingStartTS;
-                IncrementSubFrameCount();
                 if (!recorder.SkipFrame(this))
                 {
                     recorder.SignalInputsOfStage(ERecordingSessionStage.NewFrameStarting, this);

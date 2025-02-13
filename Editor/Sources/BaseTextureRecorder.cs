@@ -2,11 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
-#if HDRP_AVAILABLE
-using UnityEngine.Rendering.HighDefinition;
-#endif
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine.Experimental.Rendering;
 
 namespace UnityEditor.Recorder

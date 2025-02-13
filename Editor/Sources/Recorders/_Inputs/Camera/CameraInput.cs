@@ -124,30 +124,6 @@ namespace UnityEditor.Recorder.Input
             }
         }
 
-        private class CaptureCallbackSRPInputStrategy : InputStrategy
-        {
-            public CaptureCallbackSRPInputStrategy(bool captureAlpha) : base(captureAlpha) {}
-
-            protected override void SetupCommandBuffer(RenderTexture renderTexture)
-            {
-#if CAPTURE_ACTION
-                CameraCaptureBridge.AddCaptureAction(targetCamera, AddCaptureCommands);
-#else
-                CameraCapture.AddCaptureAction(targetCamera, AddCaptureCommands);
-#endif
-            }
-
-            public override void ReleaseCamera()
-            {
-#if CAPTURE_ACTION
-                CameraCaptureBridge.RemoveCaptureAction(targetCamera, AddCaptureCommands);
-#else
-                CameraCapture.RemoveCaptureAction(targetCamera, AddCaptureCommands);
-#endif
-                base.ReleaseCamera();
-            }
-        }
-
         private class CameraCommandBufferLegacyInputStrategy : InputStrategy
         {
             private CommandBuffer m_cbCopyFB;
@@ -200,10 +176,7 @@ namespace UnityEditor.Recorder.Input
         {
             NeedToFlipVertically = UnityHelpers.NeedToActuallyFlip(cbSettings.FlipFinalOutput, this, session.settings.NeedToFlipVerticallyForOutputFormat);
 
-            if (UnityHelpers.UsingLegacyRP())
-                m_InputStrategy = new CameraCommandBufferLegacyInputStrategy(cbSettings.RecordTransparency);
-            else
-                m_InputStrategy = new CaptureCallbackSRPInputStrategy(cbSettings.RecordTransparency);
+            m_InputStrategy = new CameraCommandBufferLegacyInputStrategy(cbSettings.RecordTransparency);
 
             m_InputStrategy.NeedToFlipVertically = NeedToFlipVertically.Value; // update the flag in the input strategy
 
@@ -223,12 +196,7 @@ namespace UnityEditor.Recorder.Input
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (cbSettings.CaptureUI && !UnityHelpers.UsingLegacyRP())
-            {
-                Debug.LogWarning("Capture UI is not supported with Scriptable Render Pipeline (SRP).");
-            }
-
-            if (cbSettings.CaptureUI && UnityHelpers.UsingLegacyRP())
+            if (cbSettings.CaptureUI)
             {
                 var uiGO = new GameObject();
                 uiGO.name = "UICamera";
@@ -297,7 +265,7 @@ namespace UnityEditor.Recorder.Input
         /// <inheritdoc/>
         protected internal override void NewFrameReady(RecordingSession session)
         {
-            if (cbSettings.CaptureUI && UnityHelpers.UsingLegacyRP())
+            if (cbSettings.CaptureUI)
             {
                 // Find canvases
                 var canvases = FindObjectsHelper.FindObjectsByTypeWrapper<Canvas>();

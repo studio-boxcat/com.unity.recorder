@@ -7,7 +7,6 @@ namespace UnityEditor.Recorder
     /// </summary>
     public static class RecorderOptions
     {
-        const string k_ShowLegacyModeMenuItem = RecorderWindow.MenuRoot + "Options/Show Legacy Recorders";
         const string k_RecorderPanelWidth = RecorderWindow.MenuRoot + "Options/Recorder Panel Width";
         const string k_SelectedRecorderIndex = RecorderWindow.MenuRoot + "Options/Selected Recorder Index";
 
@@ -44,18 +43,5 @@ namespace UnityEditor.Recorder
             get { return EditorPrefs.GetInt(k_SelectedRecorderIndex, 0); }
             set { EditorPrefs.SetInt(k_SelectedRecorderIndex, value); }
         }
-    }
-
-    [UsedImplicitly]
-    static class Options
-    {
-        // This variable is used to select how we capture the final image from the
-        // render pipeline, with the legacy render pipeline this variable is set to false
-        // with the scriptable render pipeline the CameraCaptureBride
-        // inside the SRP will reflection to set this variable to true, this will in turn
-        // enable using the CameraInput inputStrategy CaptureCallbackInputStrategy
-        //
-        // This variable is set through reflection by SRP. Everything is matching very strictly: all flags are mandatory as well as the name.
-        public static bool useCameraCaptureCallbacks = false;
     }
 }

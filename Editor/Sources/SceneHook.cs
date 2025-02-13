@@ -94,21 +94,6 @@ namespace UnityEditor.Recorder
             return session;
         }
 
-        public RecordingSession CreateRecorderSession(RecorderSettings settings)
-        {
-            var sceneHook = GetSessionHook();
-            if (sceneHook == null)
-                return null;
-
-            var session = new RecordingSession
-            {
-                recorder = RecordersInventory.CreateDefaultRecorder(settings),
-                recorderGameObject = sceneHook
-            };
-
-            return session;
-        }
-
         RecorderComponent GetRecorderComponent(RecorderSettings settings)
         {
             var sceneHook = GetSessionHook();

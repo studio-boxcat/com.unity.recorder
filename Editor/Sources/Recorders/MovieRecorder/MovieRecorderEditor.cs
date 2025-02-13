@@ -119,7 +119,7 @@ namespace UnityEditor.Recorder
             if (mrs.EncoderSettings.CanCaptureAudio)
                 mrs.CaptureAudio = EditorGUILayout.Toggle(Styles.AudioLabel, mrs.CaptureAudio);
 
-            if (!UnityHelpers.UsingURP() && mrs.ImageInputSettings.SupportsTransparent && mrs.EncoderSettings.CanCaptureAlpha)
+            if (mrs.ImageInputSettings.SupportsTransparent && mrs.EncoderSettings.CanCaptureAlpha)
                 mrs.CaptureAlpha = EditorGUILayout.Toggle(Styles.AlphaLabel, mrs.CaptureAlpha);
         }
 

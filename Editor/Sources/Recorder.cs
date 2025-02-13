@@ -110,8 +110,6 @@ namespace UnityEditor.Recorder
                     ConsoleLogMessage($"Recorder {GetType().Name} is set to record at a fixed rate and another component has already set a conflicting value for [Time.captureFramerate], new value being applied : {fixedRate}!", LogType.Error);
                 else if (Time.captureFramerate == 0 && RecorderOptions.VerboseMode)
                     ConsoleLogMessage($"Frame recorder set fixed frame rate to {fixedRate}", LogType.Log);
-                // Note that Time.captureDeltaTime will be modified by HDRP SubFrameManager
-                // to implement the accumulation motion blur/path tracer support.
 
                 Time.captureDeltaTime = 1.0f / fixedRate;
 

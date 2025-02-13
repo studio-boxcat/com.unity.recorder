@@ -1,13 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor.PackageManager.Requests;
-using UnityEditor.Presets;
 using UnityEngine;
 using UnityEditor.Recorder.Input;
-using UnityObject = UnityEngine.Object;
 using UnityEditor.PackageManager;
 
 using UnityEngine.UIElements;
@@ -631,12 +628,6 @@ namespace UnityEditor.Recorder
                 recorderItem.UpdateState();
 
             m_RecordingListItem.Reload(recorderItems);
-        }
-
-        void UpdateStateOfSelectedItem()
-        {
-            if (m_SelectedRecorderItem != null)
-                m_SelectedRecorderItem.UpdateState();
         }
 
         void OnRecorderListValidateCommand(ValidateCommandEvent evt)

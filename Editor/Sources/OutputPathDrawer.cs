@@ -9,7 +9,6 @@ namespace UnityEditor.Recorder
     {
         SerializedProperty m_RootProperty;
         SerializedProperty m_LeafProperty;
-        SerializedProperty m_ForceAssetFolder;
         SerializedProperty m_AbsolutePathProperty;
 
         protected override void Initialize(SerializedProperty property)
@@ -18,7 +17,6 @@ namespace UnityEditor.Recorder
 
             m_RootProperty = property.FindPropertyRelative("m_Root");
             m_LeafProperty = property.FindPropertyRelative("m_Leaf");
-            m_ForceAssetFolder = property.FindPropertyRelative("m_ForceAssetFolder");
             m_AbsolutePathProperty = property.FindPropertyRelative("m_AbsolutePath");
         }
 
