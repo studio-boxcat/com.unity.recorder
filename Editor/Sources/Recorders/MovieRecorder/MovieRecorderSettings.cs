@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
@@ -16,7 +15,7 @@ namespace UnityEditor.Recorder
     /// A class that represents the settings of a Movie Recorder.
     /// </summary>
     [RecorderSettings(typeof(MovieRecorder), "Movie", "movie_16")]
-    public class MovieRecorderSettings : RecorderSettings, IAccumulation, RecorderSettings.IResolutionUser
+    public class MovieRecorderSettings : RecorderSettings, RecorderSettings.IResolutionUser
     {
         /// <summary>
         /// Use this property to define the encoder used by the Recorder.
@@ -64,41 +63,6 @@ namespace UnityEditor.Recorder
 
         [SerializeField] ImageInputSelector m_ImageInputSelector = new ImageInputSelector();
         [SerializeField] AudioInputSettings m_AudioInputSettings = new AudioInputSettings();
-
-        [SerializeReference] AccumulationSettings _accumulationSettings = new AccumulationSettings();
-
-        /// <summary>
-        /// Stores the AccumulationSettings properties.
-        /// </summary>
-        public AccumulationSettings AccumulationSettings
-        {
-            get { return _accumulationSettings; }
-            set { _accumulationSettings = value; }
-        }
-
-        /// <summary>
-        /// Use this method to get all the AccumulationSettings properties.
-        /// </summary>
-        /// <returns>AccumulationSettings</returns>
-        public AccumulationSettings GetAccumulationSettings()
-        {
-            return AccumulationSettings;
-        }
-
-        /// <inheritdoc/>
-        public override bool IsAccumulationSupported()
-        {
-            if (GetAccumulationSettings() != null)
-            {
-                var cis = m_ImageInputSelector.Selected as CameraInputSettings;
-                var gis = m_ImageInputSelector.Selected as GameViewInputSettings;
-                if (cis != null || gis != null)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         /// <summary>
         /// Default constructor.
@@ -337,44 +301,6 @@ namespace UnityEditor.Recorder
         /// Some custom options that are specified for the currently selected encoder.
         /// </summary>
         [SerializeField, UsedImplicitly] internal string encoderCustomOptions = "";
-
-        /// <summary>
-        /// A method that converts from a Recorder enum value to a core engine enum value.
-        /// </summary>
-        /// <param name="quality">The enum value to convert.</param>
-        /// <returns>The converted core engine enum value.</returns>
-        /// <exception cref="InvalidEnumArgumentException">Throws an exception if the passed value is unexpected</exception>
-        internal static VideoBitrateMode ConvertBitrateMode(VideoEncodingQuality quality)
-        {
-            switch (quality)
-            {
-                case VideoEncodingQuality.Low:
-                    return VideoBitrateMode.Low;
-                case VideoEncodingQuality.Medium:
-                    return VideoBitrateMode.Medium;
-                case VideoEncodingQuality.High:
-                    return VideoBitrateMode.High;
-                default:
-                    throw new InvalidEnumArgumentException($"Unexpected VideoEncodingQuality value '{quality}'");
-            }
-        }
-
-        internal override void OnUpgradeFromVersion(Versions oldVersion)
-        {
-            if (oldVersion < Versions.MovieEncoders)
-            {
-                IEncoderSettings settings;
-                {
-                    settings = new CoreEncoderSettings
-                    {
-                        Codec = outputFormat == VideoRecorderOutputFormat.MP4 ? CoreEncoderSettings.OutputCodec.MP4 : CoreEncoderSettings.OutputCodec.WEBM,
-                        EncodingQuality = (CoreEncoderSettings.VideoEncodingQuality)encodingQuality,
-                    };
-                }
-
-                EncoderSettings = settings;
-            }
-        }
 
 #pragma warning restore 618
         bool IResolutionUser.IsOutputResolutionContradictory

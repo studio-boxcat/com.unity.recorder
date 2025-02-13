@@ -56,12 +56,6 @@ namespace UnityEditor.Recorder
 
         internal static void SetGameObjectsVisibility(bool value)
         {
-            var rcb = BindingManager.FindRecorderBindings();
-            foreach (var rc in rcb)
-            {
-                SetGameObjectVisibility(rc.gameObject, value);
-            }
-
             var rcs = FindObjectsHelper.FindObjectsByTypeWrapper<RecorderComponent>();
             foreach (var rc in rcs)
             {

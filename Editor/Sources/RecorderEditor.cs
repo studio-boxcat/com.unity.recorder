@@ -137,13 +137,8 @@ namespace UnityEditor.Recorder
                 if (showInput)
                 {
                     EditorGUILayout.Separator();
-                    AOVGUI();
                     ImageRenderOptionsGUI();
                     ExtraOptionsGUI();
-                    if (UnityHelpers.UsingHDRP())
-                    {
-                        AccumulationGUI();
-                    }
                     EditorGUILayout.Separator();
                 }
             }
@@ -302,28 +297,6 @@ namespace UnityEditor.Recorder
         /// </summary>
         protected virtual void OnEncodingGui()
         {
-        }
-
-        /// <summary>
-        /// Displays the properties of the AOV Recorder.
-        /// </summary>
-        protected virtual void AOVGUI()
-        {
-        }
-
-        /// <summary>
-        /// Displays the information related to the capture of multiframe accumulation.
-        /// </summary>
-        protected virtual void AccumulationGUI()
-        {
-            var settings = (RecorderSettings)target;
-
-            if (settings.IsAccumulationSupported())
-            {
-                var prop = serializedObject.FindProperty("_accumulationSettings");
-                if (prop != null)
-                    EditorGUILayout.PropertyField(prop);
-            }
         }
 
         internal class SavedBool

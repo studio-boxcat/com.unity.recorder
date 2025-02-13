@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Unity.Media;
 using UnityEditor.Recorder.Encoder;
 using UnityEditor.Recorder.Input;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEditor.Recorder.MovieRecorderSettings;
 
 namespace UnityEditor.Recorder
 {

@@ -205,7 +205,6 @@ namespace UnityEditor.Recorder
                 {
                     recorder.SignalInputsOfStage(ERecordingSessionStage.NewFrameReady, this);
                     recorder.RecordSubFrame(this);
-                    if (!recorder.SkipSubFrame(this))
                     {
 #if DEBUG_RECORDER_TIMING
                         Debug.LogFormat("Session::RecordFrame() index # {0} sub # {1} Out at frame # {2} - {3} - {4} ", m_FrameIndex, m_SubFrameIndex, Time.renderedFrameCount, Time.time, Time.deltaTime);
@@ -283,11 +282,8 @@ namespace UnityEditor.Recorder
                 }
             }
 
-            if (!recorder.SkipSubFrame(this))
-            {
-                // This is a 'full' frame: increment the current full frame counter
-                m_FrameIndex++;
-            }
+            // This is a 'full' frame: increment the current full frame counter
+            m_FrameIndex++;
         }
 
         // Don't start incrementing the subframe count until accumulation has been activated.

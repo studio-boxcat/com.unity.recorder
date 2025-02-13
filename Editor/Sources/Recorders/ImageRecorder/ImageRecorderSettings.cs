@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using UnityEditor.Recorder.Input;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
 namespace UnityEditor.Recorder
 {
@@ -12,7 +9,7 @@ namespace UnityEditor.Recorder
     /// A class that represents the settings of an Image Recorder.
     /// </summary>
     [RecorderSettings(typeof(ImageRecorder), "Image Sequence", "imagesequence_16")]
-    public class ImageRecorderSettings : RecorderSettings, IAccumulation, RecorderSettings.IResolutionUser
+    public class ImageRecorderSettings : RecorderSettings, RecorderSettings.IResolutionUser
     {
         /// <summary>
         /// Available options for the output image format used by Image Sequence Recorder.
@@ -142,41 +139,6 @@ namespace UnityEditor.Recorder
             bool formatSupportAlpha = OutputFormat == ImageRecorderOutputFormat.PNG;
             bool inputSupportAlpha = imageInputSettings.SupportsTransparent;
             return (formatSupportAlpha && inputSupportAlpha && !UnityHelpers.UsingURP());
-        }
-
-        [SerializeReference] AccumulationSettings _accumulationSettings = new AccumulationSettings();
-
-        /// <summary>
-        /// Stores the AccumulationSettings properties
-        /// </summary>
-        public AccumulationSettings AccumulationSettings
-        {
-            get { return _accumulationSettings; }
-            set { _accumulationSettings = value; }
-        }
-
-        /// <summary>
-        /// Use this method to get all the AccumulationSettings properties.
-        /// </summary>
-        /// <returns>AccumulationSettings</returns>
-        public AccumulationSettings GetAccumulationSettings()
-        {
-            return AccumulationSettings;
-        }
-
-        /// <inheritdoc/>
-        public override bool IsAccumulationSupported()
-        {
-            if (GetAccumulationSettings() != null)
-            {
-                var cis = m_ImageInputSelector.Selected as CameraInputSettings;
-                var gis = m_ImageInputSelector.Selected as GameViewInputSettings;
-                if (cis != null || gis != null)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         internal override void OnValidate()

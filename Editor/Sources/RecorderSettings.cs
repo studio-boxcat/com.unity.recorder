@@ -71,7 +71,7 @@ namespace UnityEditor.Recorder
     /// Main base class for a Recorder settings.
     /// Each Recorder needs to have its corresponding settings properly configured.
     /// </summary>
-    public abstract class RecorderSettings : ScriptableObject, ISerializationCallbackReceiver
+    public abstract class RecorderSettings : ScriptableObject
     {
         private static string s_OutputFileErrorMessage = "Recorder output file cannot be empty";
 
@@ -366,74 +366,7 @@ namespace UnityEditor.Recorder
         {
             captureEveryNthFrame = Mathf.Max(1, captureEveryNthFrame);
             take = Mathf.Max(0, take);
-            OnValidateUpgrade();
         }
-
-        /// <summary>
-        /// Indicates whether the current Recorder supports Accumulation recording or not.
-        /// </summary>
-        /// <returns>True if the current Recorder supports Accumulation recording, False otherwise.</returns>
-        public virtual bool IsAccumulationSupported()
-        {
-            return false;
-        }
-
-        // Obsolete and asset upgrade stuff. Should be moved to a new file (Trunk bug prevents it for now)
-
-        internal enum Versions
-        {
-            Initial = 0,
-            MovieEncoders = 1,
-        }
-
-        internal const int k_LatestVersion = (int)Versions.MovieEncoders;
-
-        [SerializeField, HideInInspector] int m_Version = 0;
-
-        internal int Version => m_Version;
-
-        /// <summary>
-        /// Unity calls this method before serializing the object.
-        /// </summary>
-        void ISerializationCallbackReceiver.OnBeforeSerialize()
-        {
-            OnBeforeSerialize();
-        }
-
-        /// <summary>
-        /// Unity calls this method after de-serializing the object.
-        /// </summary>
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-        {
-            if (m_Version < k_LatestVersion)
-            {
-                OnUpgradeFromVersion((Versions)m_Version); //upgrade derived classes
-            }
-
-            OnAfterDeserialize();
-        }
-
-        void OnEnable()
-        {
-            OnValidateUpgrade();
-        }
-
-        void OnValidateUpgrade()
-        {
-            m_Version = k_LatestVersion;
-        }
-
-        /// <summary>
-        /// Called before a RecorderSetting is serialized.
-        /// </summary>
-        protected virtual void OnBeforeSerialize() {}// Do not clean up since users can only override this
-
-        /// <summary>
-        /// Called after a RecorderSetting has been deserialized.
-        /// </summary>
-        protected virtual void OnAfterDeserialize() {} // Do not clean up since users can only override this
-
-        internal virtual void OnUpgradeFromVersion(Versions oldVersion) {}
 
         internal interface IResolutionUser
         {

@@ -197,10 +197,8 @@ namespace UnityEditor.Recorder
         {
             base.RecordSubFrame(ctx);
             var audioInput = (AudioInput)m_Inputs[1];
-            var okCaptureAccum = Settings.AccumulationSettings.CaptureAccumulation && accumulationInitialized;
             if (Settings.CaptureAudio && Settings.EncoderSettings.CanCaptureAudio &&
-                audioInput.AudioSettings.PreserveAudio &&
-                (okCaptureAccum || !Settings.AccumulationSettings.CaptureAccumulation))
+                audioInput.AudioSettings.PreserveAudio)
             {
                 m_Encoder.AddAudioFrame(audioInput.MainBuffer);
             }
