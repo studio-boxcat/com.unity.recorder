@@ -1,10 +1,8 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using UnityEditor.Recorder.Input;
 using UnityEngine;
 using UnityEngine.Profiling;
-using UnityEngine.Rendering;
 
 namespace UnityEditor.Recorder
 {
@@ -12,13 +10,7 @@ namespace UnityEditor.Recorder
     {
         Queue<string> m_PathQueue = new Queue<string>();
 
-        protected override TextureFormat ReadbackTextureFormat
-        {
-            get
-            {
-                return Settings.OutputFormat != ImageRecorderSettings.ImageRecorderOutputFormat.EXR ? TextureFormat.RGBA32 : TextureFormat.RGBAFloat;
-            }
-        }
+        protected override TextureFormat ReadbackTextureFormat => TextureFormat.RGBA32;
 
         protected internal override bool BeginRecording(RecordingSession session)
         {
@@ -55,9 +47,6 @@ namespace UnityEditor.Recorder
                         break;
                     case ImageRecorderSettings.ImageRecorderOutputFormat.JPEG:
                         bytes = tex.EncodeToJPG(Settings.JpegQuality);
-                        break;
-                    case ImageRecorderSettings.ImageRecorderOutputFormat.EXR:
-                        bytes = tex.EncodeToEXR(ImageRecorderSettings.ToNativeType(Settings.EXRCompression));
                         break;
                     default:
                         Profiler.EndSample();

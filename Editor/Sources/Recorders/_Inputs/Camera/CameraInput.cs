@@ -364,11 +364,6 @@ namespace UnityEditor.Recorder.Input
             ImageRecorderSettings s = session.settings as ImageRecorderSettings;
             var fmtRW = RenderTextureReadWrite.Default;
             var fmt = RenderTextureFormat.ARGB32;
-            if (s != null && s.CanCaptureHDRFrames() && s.CaptureHDR)
-            {
-                fmtRW = RenderTextureReadWrite.Linear;
-                fmt = RenderTextureFormat.DefaultHDR;
-            }
 
             OutputRenderTexture = new RenderTexture(OutputWidth, OutputHeight, 0, fmt, fmtRW)
             {

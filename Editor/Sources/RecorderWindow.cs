@@ -925,7 +925,6 @@ namespace UnityEditor.Recorder
                 return;
             }
             var success = m_RecorderController.StartRecording();
-            RecorderAnalytics.SendStartEvent(m_RecorderController);
 
             if (success)
             {
@@ -983,7 +982,6 @@ namespace UnityEditor.Recorder
             if (RecorderOptions.VerboseMode)
                 Debug.Log("Stop Recording.");
 
-            RecorderAnalytics.SendStopEvent(m_RecorderController, !success);
             m_RecorderController.StopRecording();
 
             m_State = State.Idle;

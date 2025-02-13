@@ -74,10 +74,6 @@ namespace UnityEditor.Recorder.Timeline
 
             if (session.isRecording && m_PlayState == PlayState.Playing)
             {
-#if UNITY_EDITOR
-                const double eps = 1e-5; // end is never evaluated
-                RecorderAnalytics.SendStopEvent(session, false, playable.GetTime() >= playable.GetDuration() - eps);
-#endif
                 recordingWithAccumulation = false;
                 recordingWithoutAccumulation = false;
                 session.Dispose();

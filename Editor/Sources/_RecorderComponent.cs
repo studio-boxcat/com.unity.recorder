@@ -60,10 +60,8 @@ namespace UnityEditor.Recorder
                 var res = session.BeginRecording();
                 fail = !res;
 #if UNITY_EDITOR
-                RecorderAnalytics.SendStartEvent(session);
                 if (!res)
                 {
-                    RecorderAnalytics.SendStopEvent(session, true, false);
                 }
                 else
                 {

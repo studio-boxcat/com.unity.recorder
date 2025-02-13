@@ -27,57 +27,6 @@ namespace UnityEditor.Recorder
             /// Output the recording in JPEG format.
             /// </summary>
             JPEG,
-            /// <summary>
-            /// Output the recording in EXR format.
-            /// </summary>
-            EXR
-        }
-
-        /// <summary>
-        /// Compression type for EXR files.
-        /// </summary>
-        public enum EXRCompressionType
-        {
-            /// <summary>
-            /// No compression.
-            /// </summary>
-            None,
-            /// <summary>
-            /// Run-length encoding compression.
-            /// </summary>
-            RLE,
-            /// <summary>
-            /// Zip compression.
-            /// </summary>
-            Zip,
-            /// <summary>
-            /// Wavelet compression.
-            /// </summary>
-            PIZ,
-        }
-
-        static internal Texture2D.EXRFlags ToNativeType(EXRCompressionType type)
-        {
-            Texture2D.EXRFlags nativeType = Texture2D.EXRFlags.None;
-            switch (type)
-            {
-                case ImageRecorderSettings.EXRCompressionType.RLE:
-                    nativeType = Texture2D.EXRFlags.CompressRLE;
-                    break;
-                case ImageRecorderSettings.EXRCompressionType.Zip:
-                    nativeType = Texture2D.EXRFlags.CompressZIP;
-                    break;
-                case ImageRecorderSettings.EXRCompressionType.PIZ:
-                    nativeType = Texture2D.EXRFlags.CompressPIZ;
-                    break;
-                case ImageRecorderSettings.EXRCompressionType.None:
-                    nativeType = Texture2D.EXRFlags.None;
-                    break;
-                default:
-                    throw new InvalidEnumArgumentException($"Unexpected compression type '{type}'.");
-            }
-
-            return nativeType;
         }
 
         /// <summary>
@@ -135,17 +84,7 @@ namespace UnityEditor.Recorder
 
         [SerializeField] private int m_JpegQuality = 75;
 
-        /// <summary>
-        /// Use this property to capture the frames in HDR (if the setup supports it).
-        /// </summary>
-        public bool CaptureHDR
-        {
-            get { return CanCaptureHDRFrames() && m_ColorSpace == ColorSpaceType.Unclamped_linear_sRGB; }
-        }
-
-
         [SerializeField] ImageInputSelector m_ImageInputSelector = new ImageInputSelector();
-        [SerializeField] internal ImageRecorderSettings.EXRCompressionType m_EXRCompression = ImageRecorderSettings.EXRCompressionType.Zip;
         [SerializeField] internal ColorSpaceType m_ColorSpace = ColorSpaceType.Unclamped_linear_sRGB;
         /// <summary>
         /// Default constructor.
@@ -166,21 +105,10 @@ namespace UnityEditor.Recorder
                         return "png";
                     case ImageRecorderOutputFormat.JPEG:
                         return "jpg";
-                    case ImageRecorderOutputFormat.EXR:
-                        return "exr";
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
-        }
-
-        /// <summary>
-        /// Stores the data compression method to use to encode image files in the EXR format.
-        /// </summary>
-        public EXRCompressionType EXRCompression
-        {
-            get => m_EXRCompression;
-            set => m_EXRCompression = value;
         }
 
         /// <summary>
@@ -190,29 +118,6 @@ namespace UnityEditor.Recorder
         {
             get => m_ColorSpace;
             set => m_ColorSpace = value;
-        }
-
-        // This is necessary because the value in OutputColorSpace might hold invalid information (e.g. for PNG and JPEG it
-        // could say Linear) because the value doesn't change when the output format is changed.
-        // See the handling of the color space dropdown in ImageRecorderEditor.FileTypeAndFormatGUI.
-        internal ColorSpaceType OutputColorSpaceComputed
-        {
-            get
-            {
-                switch (OutputFormat)
-                {
-                    case ImageRecorderOutputFormat.PNG:
-                    case ImageRecorderOutputFormat.JPEG:
-                        return ColorSpaceType.sRGB_sRGB; // these formats must always be sRGB
-                    case ImageRecorderOutputFormat.EXR:
-                        if (CanCaptureHDRFrames())
-                            return OutputColorSpace;
-                        else
-                            return ColorSpaceType.sRGB_sRGB; // must be sRGB
-                    default:
-                        throw new InvalidEnumArgumentException($"Unexpected output format {OutputFormat}");
-                }
-            }
         }
 
         /// <summary>
@@ -232,17 +137,9 @@ namespace UnityEditor.Recorder
             get { yield return m_ImageInputSelector.Selected; }
         }
 
-        internal bool CanCaptureHDRFrames()
-        {
-            bool isGameViewInput = imageInputSettings.InputType == typeof(GameViewInput);
-            bool isFormatExr = OutputFormat == ImageRecorderOutputFormat.EXR;
-            return !isGameViewInput && isFormatExr && UnityHelpers.UsingHDRP();
-        }
-
         internal bool CanCaptureAlpha()
         {
-            bool formatSupportAlpha = OutputFormat == ImageRecorderOutputFormat.PNG ||
-                OutputFormat == ImageRecorderOutputFormat.EXR;
+            bool formatSupportAlpha = OutputFormat == ImageRecorderOutputFormat.PNG;
             bool inputSupportAlpha = imageInputSettings.SupportsTransparent;
             return (formatSupportAlpha && inputSupportAlpha && !UnityHelpers.UsingURP());
         }
