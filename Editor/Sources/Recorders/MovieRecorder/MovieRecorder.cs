@@ -11,7 +11,7 @@ namespace UnityEditor.Recorder
 {
     class MovieRecorder : BaseTextureRecorder<MovieRecorderSettings>
     {
-        IEncoder m_Encoder;
+        CoreEncoder m_Encoder;
 
         // The count of concurrent Movie Recorder instances. It is used to log a warning.
         static private int s_ConcurrentCount = 0;
@@ -26,7 +26,6 @@ namespace UnityEditor.Recorder
         private bool m_RecordingAlreadyEnded = false;
 
         private PooledBufferAsyncGPUReadback asyncReadback;
-        protected override TextureFormat ReadbackTextureFormat => Settings.EncoderSettings.GetTextureFormat(Settings.CaptureAlpha && Settings.EncoderSettings.CanCaptureAlpha && Settings.ImageInputSettings.SupportsTransparent);
 
         protected internal override void SessionCreated(RecordingSession session)
         {
@@ -64,7 +63,7 @@ namespace UnityEditor.Recorder
             var audioInput = (AudioInput)m_Inputs[1];
 
             // Create the encoder
-            m_Encoder = EncoderTypeUtilities.CreateEncoderInstance(Settings.EncoderSettings.GetType());
+            m_Encoder = new CoreEncoder();
 
             var frameRate = session.settings.FrameRatePlayback == FrameRatePlayback.Constant
                 ? RationalFromDouble(session.settings.FrameRate)
@@ -168,15 +167,7 @@ namespace UnityEditor.Recorder
 
         internal override bool WriteGPUTextureFrame(RenderTexture tex)
         {
-            if (m_Encoder.GetVideoInputPath == IEncoder.VideoInputPath.GPUBuffer)
-            {
-                var recorderTime = DequeueTimeStamp();
-                m_Encoder.AddVideoFrame(tex, ComputeMediaTime(recorderTime));
-            }
-            else
-            {
-                asyncReadback.RequestGPUReadBack(tex, GraphicsFormatUtility.GetGraphicsFormat(ReadbackTextureFormat, false), WriteCPUFrame);
-            }
+            asyncReadback.RequestGPUReadBack(tex, GraphicsFormatUtility.GetGraphicsFormat(ReadbackTextureFormat, false), WriteCPUFrame);
 
             WarnOfConcurrentRecorders();
             return true;

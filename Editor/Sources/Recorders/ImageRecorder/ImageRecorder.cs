@@ -10,8 +10,6 @@ namespace UnityEditor.Recorder
     {
         Queue<string> m_PathQueue = new Queue<string>();
 
-        protected override TextureFormat ReadbackTextureFormat => TextureFormat.RGBA32;
-
         protected internal override bool BeginRecording(RecordingSession session)
         {
             if (!base.BeginRecording(session))

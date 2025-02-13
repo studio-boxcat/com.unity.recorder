@@ -8,7 +8,7 @@ namespace UnityEditor.Recorder.Encoder
     /// <summary>
     /// The Core Media Encoder
     /// </summary>
-    class CoreEncoder : IEncoder
+    class CoreEncoder
     {
         private MediaEncoder encoderHandle;
         private VideoTrackAttributes videoAttributes; // for the old API
@@ -17,7 +17,7 @@ namespace UnityEditor.Recorder.Encoder
         private bool disposed = false;
         private bool usingNewAPI; // whether or not we are using the new API (advanced encoding options)
 
-        public void OpenStream(IEncoderSettings settings, RecordingContext ctx)
+        public void OpenStream(CoreEncoderSettings settings, RecordingContext ctx)
         {
             var coreSettings = settings as CoreEncoderSettings;
 

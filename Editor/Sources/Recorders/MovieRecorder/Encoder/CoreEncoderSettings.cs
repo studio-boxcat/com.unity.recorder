@@ -14,7 +14,7 @@ namespace UnityEditor.Recorder.Encoder
     [DisplayName("Unity Media Encoder")]
     [Serializable]
     [EncoderSettings(typeof(CoreEncoder))]
-    public sealed class CoreEncoderSettings : IEncoderSettings, IEquatable<CoreEncoderSettings>
+    public sealed class CoreEncoderSettings : IEquatable<CoreEncoderSettings>
     {
         internal readonly int kMaxSupportedSize_H264 = (int)ImageHeight.x2160p_4K;
         internal readonly int kMaxSupportedSize_VP8 = (int)ImageHeight.x4320p_8K;
@@ -180,10 +180,10 @@ namespace UnityEditor.Recorder.Encoder
         }
 
         /// <inheritdoc/>
-        bool IEncoderSettings.CanCaptureAlpha => CodecSupportsTransparency(Codec);
+        public bool CanCaptureAlpha => CodecSupportsTransparency(Codec);
 
         /// <inheritdoc/>
-        bool IEncoderSettings.CanCaptureAudio => true;
+        public bool CanCaptureAudio => true;
 
         [SerializeField] OutputCodec codec;
         [SerializeField] VideoEncodingQuality encodingQuality = VideoEncodingQuality.High;
@@ -198,7 +198,7 @@ namespace UnityEditor.Recorder.Encoder
         }
 
         /// <inheritdoc/>
-        string IEncoderSettings.Extension
+        public string Extension
         {
             get
             {
@@ -210,16 +210,10 @@ namespace UnityEditor.Recorder.Encoder
         }
 
         /// <inheritdoc/>
-        EncoderCoordinateConvention IEncoderSettings.CoordinateConvention => EncoderCoordinateConvention.OriginIsBottomLeft;
+        public EncoderCoordinateConvention CoordinateConvention => EncoderCoordinateConvention.OriginIsBottomLeft;
 
         /// <inheritdoc/>
-        TextureFormat IEncoderSettings.GetTextureFormat(bool inputContainsAlpha)
-        {
-            return TextureFormat.RGBA32;
-        }
-
-        /// <inheritdoc/>
-        void IEncoderSettings.ValidateRecording(RecordingContext ctx, List<string> errors, List<string> warnings)
+        public void ValidateRecording(RecordingContext ctx, List<string> errors, List<string> warnings)
         {
             if (!IsCodecSupportedOnThisPlatform(Codec))
                 errors.Add($"Codec '{Codec}' is not supported on this platform.");

@@ -17,7 +17,6 @@ namespace UnityEditor.Recorder
         static class Styles
         {
             internal static readonly GUIContent SourceLabel = new GUIContent("Source", "The input type to use for the recording.");
-            internal static readonly GUIContent EncoderLabel = new GUIContent("Encoder", "The encoder to use for the recording.");
             internal static readonly GUIContent AlphaLabel = new GUIContent("Include alpha", "Whether or not to include the alpha channel.");
             internal static readonly GUIContent AudioLabel = new GUIContent("Include audio", "Whether or not to include the audio signal.");
         }
@@ -36,75 +35,9 @@ namespace UnityEditor.Recorder
         {
         }
 
-        static string GetEncoderDisplayName(Type t)
-        {
-            var dname = Attribute.GetCustomAttribute(t, typeof(DisplayNameAttribute)) as DisplayNameAttribute;
-            if (dname != null && !string.IsNullOrWhiteSpace(dname.DisplayName))
-                return dname.DisplayName;
-            return t.Name;
-        }
-
         protected override void FileTypeAndFormatGUI()
         {
             var mrs = target as MovieRecorderSettings;
-            var encoderTypes = EncoderTypeUtilities.GetEncoderSettings();
-            int selectedIdx = 0;
-            string[] strings = new string[1];
-
-            if (mrs.EncoderSettings != null)
-            {
-                selectedIdx = encoderTypes.FindIndex(x => x == mrs.EncoderSettings.GetType());
-                strings = encoderTypes.Select(GetEncoderDisplayName).ToArray();
-            }
-            else
-            {
-                strings = encoderTypes.Select(GetEncoderDisplayName).Union(new[] {"Invalid Encoder"}).ToArray();
-                selectedIdx = strings.Length - 1;
-            }
-
-            // Drawing code
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                EditorGUILayout.LabelField(Styles.EncoderLabel, GUILayout.Width(EditorGUIUtility.labelWidth));
-                if (EditorGUILayout.DropdownButton(new GUIContent(strings[selectedIdx]), FocusType.Passive))
-                {
-                    var menu = new GenericMenu();
-                    for (var k = 0; k < encoderTypes.Count; ++k)
-                    {
-                        var currType = encoderTypes[k];
-                        var encoderInstance = EncoderTypeUtilities.CreateEncoderSettingsInstance(currType);
-
-                        if (encoderInstance.SupportsCurrentPlatform())
-                        {
-                            menu.AddItem(new GUIContent(strings[k]), k == selectedIdx, (_k) =>
-                            {
-                                var idx = (int)_k;
-                                selectedIdx = idx;
-                                var currType = encoderTypes[selectedIdx];
-                                Undo.RecordObject(mrs, $"Create New Encoder Settings for Recorder '{mrs.name}', encoder of type '{currType.Name}'");
-                                mrs.EncoderSettings = EncoderTypeUtilities.CreateEncoderSettingsInstance(currType);
-                                serializedObject.Update();
-                                InvokeRecorderDataHasChanged();
-                            }, k);
-                        }
-                        else
-                        {
-                            // The item is disabled (can't be checked either)
-                            menu.AddDisabledItem(new GUIContent(strings[k]));
-                        }
-                    }
-
-                    if (lastRect.HasValue)
-                    {
-                        menu.DropDown(lastRect.Value);
-                    }
-                }
-
-                if (Event.current.type == EventType.Repaint)
-                {
-                    lastRect = GUILayoutUtility.GetLastRect();
-                }
-            }
 
             if (mrs.EncoderSettings == null)
             {

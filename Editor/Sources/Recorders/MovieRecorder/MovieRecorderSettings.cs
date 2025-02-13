@@ -20,12 +20,12 @@ namespace UnityEditor.Recorder
         /// <summary>
         /// Use this property to define the encoder used by the Recorder.
         /// </summary>
-        public IEncoderSettings EncoderSettings
+        public CoreEncoderSettings EncoderSettings
         {
             get => encoderSettings;
             set => encoderSettings = value;
         }
-        [SerializeReference] IEncoderSettings encoderSettings = new CoreEncoderSettings();
+        [SerializeField] CoreEncoderSettings encoderSettings = new CoreEncoderSettings();
 
         /// <summary>
         /// Use this property to capture the alpha channel (True) or not (False) in the output.

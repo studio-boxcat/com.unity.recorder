@@ -47,7 +47,7 @@ namespace UnityEditor.Recorder
         /// <summary>
         /// Stores the format of the texture used for the readback.
         /// </summary>
-        protected abstract TextureFormat ReadbackTextureFormat { get; }
+        protected const TextureFormat ReadbackTextureFormat = TextureFormat.RGBA32;
 
         /// <inheritdoc/>
         protected internal override bool BeginRecording(RecordingSession session)
