@@ -199,21 +199,6 @@ namespace UnityEditor.Recorder
                 ctx.height = cs.OutputHeight;
                 ctx.width = cs.OutputWidth;
             }
-            else if (inputSettings is Camera360InputSettings cs3)
-            {
-                ctx.height = cs3.OutputHeight;
-                ctx.width = cs3.OutputWidth;
-            }
-            else if (inputSettings is RenderTextureInputSettings rts)
-            {
-                ctx.height = rts.OutputHeight;
-                ctx.width = rts.OutputWidth;
-            }
-            else if (inputSettings is RenderTextureSamplerSettings ss)
-            {
-                ctx.height = ss.OutputHeight;
-                ctx.width = ss.OutputWidth;
-            }
             else
             {
                 throw new InvalidCastException($"Unexpected type of input settings");
@@ -286,10 +271,6 @@ namespace UnityEditor.Recorder
             /// Output the recording with the VP9 codec in a WebM container.
             /// </summary>
             [InspectorName("VP8 WebM")] WebM,
-            /// <summary>
-            /// Output the recording with the ProRes codec in a MOV container.
-            /// </summary>
-            [InspectorName("ProRes QuickTime")] MOV,
         }
 
         /// <summary>
@@ -312,133 +293,7 @@ namespace UnityEditor.Recorder
             High
         }
 
-        /// <summary>
-        /// Indicates the output video format currently used for this Recorder.
-        /// </summary>
-        [Obsolete("Please use the EncoderSettings API to set/get the format/codec of each Encoder.")]
-        public VideoRecorderOutputFormat OutputFormat
-        {
-            get
-            {
-                if (EncoderSettings is ProResEncoderSettings)
-                {
-                    return VideoRecorderOutputFormat.MOV;
-                }
-
-                if (EncoderSettings is CoreEncoderSettings settings)
-                {
-                    return (VideoRecorderOutputFormat)settings.Codec;
-                }
-
-                throw new Exception("Available only for CoreEncoderSettings and ProResEncoderSettings");
-            }
-            set
-            {
-                if (value == VideoRecorderOutputFormat.MOV)
-                {
-                    if (EncoderSettings is ProResEncoderSettings)
-                    {
-                        return;
-                    }
-
-                    if (!HasDefaultCoreEncoderSettings())
-                    {
-                        throw new Exception(
-                            "CoreEncoderSettings already changed. Please use the EncoderSettings API");
-                    }
-
-                    EncoderSettings = new ProResEncoderSettings();
-                    return;
-                }
-
-                if (EncoderSettings is CoreEncoderSettings || HasDefaultProResEncoderSettings())
-                {
-                    CoreEncoderSettings s;
-                    if (EncoderSettings is CoreEncoderSettings)
-                    {
-                        s = EncoderSettings as CoreEncoderSettings;
-                    }
-                    else
-                    {
-                        s = new CoreEncoderSettings();
-                    }
-                    s.Codec = value == VideoRecorderOutputFormat.MP4
-                        ? CoreEncoderSettings.OutputCodec.MP4
-                        : CoreEncoderSettings.OutputCodec.WEBM;
-
-                    EncoderSettings = s;
-                }
-                else
-                {
-                    // Do not silently wipe proRes settings
-                    throw new Exception("ProResEncoderSettings already changed. Please use the EncoderSettings API");
-                }
-            }
-        }
-
         [SerializeField] VideoRecorderOutputFormat outputFormat = VideoRecorderOutputFormat.MP4;
-
-        /// <summary>
-        /// Indicates the video bit rate preset currently used for this Recorder.
-        /// </summary>
-        [Obsolete("Please use the EncoderSettings API to set/get the bitrate/encoding quality of each Encoder.")]
-        public VideoBitrateMode VideoBitRateMode
-        {
-            get
-            {
-                if (EncoderSettings is CoreEncoderSettings settings)
-                {
-                    return ConvertBitrateMode((VideoEncodingQuality)settings.EncodingQuality);
-                }
-
-                throw new Exception("Available only for CoreEncoderSettings");
-            }
-            set
-            {
-                if (EncoderSettings is CoreEncoderSettings settings)
-                {
-                    settings.EncodingQuality = (CoreEncoderSettings.VideoEncodingQuality)value;
-                }
-                else if (HasDefaultProResEncoderSettings())
-                {
-                    var s = new CoreEncoderSettings
-                    {
-                        EncodingQuality = (CoreEncoderSettings.VideoEncodingQuality)value
-                    };
-                    EncoderSettings = s;
-                }
-                else
-                    throw new Exception("Available only for CoreEncoderSettings");
-            }
-        }
-
-        /// <summary>
-        /// Indicates the encoding quality to use for this Recorder.
-        /// </summary>
-        [Obsolete("Please use the EncoderSettings API to set/get the bitrate/encoding quality of each Encoder.")]
-        public VideoEncodingQuality EncodingQuality
-        {
-            get
-            {
-                if (EncoderSettings is CoreEncoderSettings settings)
-                {
-                    return (VideoEncodingQuality)settings.EncodingQuality;
-                }
-
-                throw new Exception("Available only for CoreEncoderSettings");
-            }
-            set
-            {
-                if (EncoderSettings is CoreEncoderSettings settings)
-                {
-                    settings.EncodingQuality = (CoreEncoderSettings.VideoEncodingQuality)value;
-                }
-                else
-                {
-                    throw new Exception("Available only for CoreEncoderSettings");
-                }
-            }
-        }
 
         [SerializeField, FormerlySerializedAs("videoBitRateMode")]
         VideoEncodingQuality encodingQuality = VideoEncodingQuality.High;
@@ -509,14 +364,6 @@ namespace UnityEditor.Recorder
             if (oldVersion < Versions.MovieEncoders)
             {
                 IEncoderSettings settings;
-                if (outputFormat == VideoRecorderOutputFormat.MOV)
-                {
-                    settings = new ProResEncoderSettings
-                    {
-                        Format = (ProResEncoderSettings.OutputFormat)(encoderPresetSelected)
-                    };
-                }
-                else
                 {
                     settings = new CoreEncoderSettings
                     {
@@ -527,18 +374,6 @@ namespace UnityEditor.Recorder
 
                 EncoderSettings = settings;
             }
-        }
-
-        bool HasDefaultCoreEncoderSettings()
-        {
-            return EncoderSettings == null ||
-                EncoderSettings is CoreEncoderSettings && EncoderSettings.Equals(new CoreEncoderSettings());
-        }
-
-        bool HasDefaultProResEncoderSettings()
-        {
-            return EncoderSettings == null ||
-                EncoderSettings is ProResEncoderSettings && EncoderSettings.Equals(new ProResEncoderSettings());
         }
 
 #pragma warning restore 618

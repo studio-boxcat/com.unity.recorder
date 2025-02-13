@@ -300,9 +300,7 @@ namespace UnityEditor.Recorder
             // * source is RenderTextureSampler
             // * source is CameraInput in a URP project
             bool isFlippedBecauseOfOpenGL = !SystemInfo.graphicsUVStartsAtTop &&
-                !(captureSource is Camera360Input || captureSource is RenderTextureInput
-                    || captureSource is RenderTextureSampler
-                    || (captureSource is CameraInput && UsingURP()));
+                !(captureSource is CameraInput && UsingURP());
 
             // The image will already be flipped if:
             // * the input comes from the GameView, OR

@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
-#if HDRP_AVAILABLE
-using UnityEditor.Recorder.AOV;
-#endif
-using UnityEditor.Recorder.FrameCapturer;
 
 namespace UnityEditor.Recorder
 {
@@ -22,7 +18,6 @@ namespace UnityEditor.Recorder
     {
         static Dictionary<Type, RecorderInfo> s_Recorders;
         static HashSet<RecorderInfo> s_BuiltInRecorderInfos;
-        static HashSet<RecorderInfo> s_LegacyRecorderInfos;
 
         static IEnumerable<KeyValuePair<Type, object[]>> FindRecorders()
         {
@@ -85,29 +80,8 @@ namespace UnityEditor.Recorder
                 {
                     s_BuiltInRecorderInfos = new HashSet<RecorderInfo>
                     {
-                        s_Recorders[typeof(AnimationRecorderSettings)],
                         s_Recorders[typeof(MovieRecorderSettings)],
                         s_Recorders[typeof(ImageRecorderSettings)],
-#if HDRP_AVAILABLE
-#pragma warning disable 618
-                        s_Recorders[typeof(AOVRecorderSettings)],
-#pragma warning restore 618
-#endif
-                        s_Recorders[typeof(AudioRecorderSettings)]
-                    };
-                }
-
-                if (s_LegacyRecorderInfos == null)
-                {
-                    s_LegacyRecorderInfos = new HashSet<RecorderInfo>
-                    {
-#pragma warning disable 618
-                        s_Recorders[typeof(GIFRecorderSettings)],
-#pragma warning restore 618
-                        s_Recorders[typeof(MP4RecorderSettings)],
-                        s_Recorders[typeof(EXRRecorderSettings)],
-                        s_Recorders[typeof(PNGRecorderSettings)],
-                        s_Recorders[typeof(WEBMRecorderSettings)]
                     };
                 }
             }
@@ -132,28 +106,12 @@ namespace UnityEditor.Recorder
             }
         }
 
-        internal static IEnumerable<RecorderInfo> legacyRecorderInfos
-        {
-            get
-            {
-                Init();
-                return s_LegacyRecorderInfos;
-            }
-        }
-
         internal static IEnumerable<RecorderInfo> customRecorderInfos
         {
             get
             {
                 Init();
-                var custom = s_Recorders.Values.Where(r => !s_BuiltInRecorderInfos.Contains(r) && !s_LegacyRecorderInfos.Contains(r));
-#if HDRP_AVAILABLE
-                return custom;
-#else
-                // Remove AOV Recorder from list of custom because it will be inserted in the above catch-all other logic
-                var result = custom.Where(c => c.recorderType != typeof(AOVRecorder));
-                return result;
-#endif
+                return s_Recorders.Values.Where(r => !s_BuiltInRecorderInfos.Contains(r));
             }
         }
 
