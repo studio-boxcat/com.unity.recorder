@@ -111,7 +111,7 @@ namespace UnityEditor.Recorder
                     $"MovieRecorder starting to write video {width}x{height}@[{recordingContext.fps.numerator}/{recordingContext.fps.denominator}] fps into {Settings.fileNameGenerator.BuildAbsolutePath(session)}",
                     LogType.Log);
 
-            if (audioInput.AudioSettings.PreserveAudio && !UnityHelpers.CaptureAccumulation(settings))
+            if (audioInput.AudioSettings.PreserveAudio)
             {
                 if (RecorderOptions.VerboseMode)
                     ConsoleLogMessage($"Starting to write audio {audioInput.ChannelCount}ch @ {audioInput.SampleRate}Hz", LogType.Log);
@@ -257,14 +257,6 @@ namespace UnityEditor.Recorder
                 numerator = (int)((long)integral * denom + ((long)Math.Round(frac * precision)) / gcd),
                 denominator = (int)denom
             };
-        }
-
-        internal static double DoubleFromRational(MediaRational rational)
-        {
-            if (rational.denominator == 0)
-                return 0;
-            else
-                return (float)rational.numerator / (float)rational.denominator;
         }
     }
 }

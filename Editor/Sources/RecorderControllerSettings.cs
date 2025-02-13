@@ -81,57 +81,6 @@ namespace UnityEditor.Recorder
             }
         }
 
-        /// <summary>
-        /// Sets the Recorders to Manual mode.
-        /// </summary>
-        public void SetRecordModeToManual()
-        {
-            m_RecordMode = RecordMode.Manual;
-        }
-
-        /// <summary>
-        /// Sets the Recorders to Single Frame recording mode.
-        /// </summary>
-        /// <param name="frameNumber">The frame to be recorded.</param>
-        public void SetRecordModeToSingleFrame(int frameNumber)
-        {
-            m_RecordMode = RecordMode.SingleFrame;
-            m_StartFrame = m_EndFrame = frameNumber;
-        }
-
-        /// <summary>
-        /// Sets the Recorders to Frame Interval mode and defines the Start and End frame of the interval to record.
-        /// </summary>
-        /// <param name="startFrame">Start frame.</param>
-        /// <param name="endFrame">End frame.</param>
-        public void SetRecordModeToFrameInterval(int startFrame, int endFrame)
-        {
-            m_RecordMode = RecordMode.FrameInterval;
-            m_StartFrame = startFrame;
-            m_EndFrame = endFrame;
-        }
-
-        /// <summary>
-        /// Sets the Recorders to Time Interval mode and defines the Start and End times of the interval to record.
-        /// </summary>
-        /// <param name="startTime">The start time, in seconds.</param>
-        /// <param name="endTime">The end time, in seconds.</param>
-        public void SetRecordModeToTimeInterval(float startTime, float endTime)
-        {
-            m_RecordMode = RecordMode.TimeInterval;
-            m_StartTime = startTime;
-            m_EndTime = endTime;
-        }
-
-        /// <summary>
-        /// Indicates if the Recorders frame rate should cap the Unity rendering frame rate. When enabled, Unity is prevented from rendering faster than the set FrameRate.
-        /// </summary>
-        public bool CapFrameRate
-        {
-            get { return m_CapFrameRate; }
-            set { m_CapFrameRate = value; }
-        }
-
         [SerializeField] List<RecorderSettings> m_RecorderSettings = new List<RecorderSettings>();
 
         string m_Path;
@@ -292,24 +241,6 @@ namespace UnityEditor.Recorder
         {
             ApplyGlobalSetting(recorder);
             m_RecorderSettings.Add(recorder);
-        }
-
-        /// <summary>
-        /// Gets the number of currently active recorders that capture accumulation.
-        /// </summary>
-        /// <returns>The number of recorders that are currently capturing accumulation.</returns>
-        int GetNumberOfActiveSubFrameRecorders()
-        {
-            return RecorderSettings.Count(r => r.Enabled && UnityHelpers.CaptureAccumulation(r));
-        }
-
-        /// <summary>
-        /// Whether the current context should prevent recording due to invalid accumulation settings or not.
-        /// </summary>
-        /// <returns></returns>
-        internal bool InvalidContextBecauseOfAccumulation()
-        {
-            return GetNumberOfActiveSubFrameRecorders() >= 1 && RecorderSettings.Count(r => r.Enabled) > 1;
         }
     }
 }

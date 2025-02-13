@@ -790,20 +790,6 @@ namespace UnityEditor.Recorder
             foreach (var recorderItem in m_RecordingListItem.items)
                 recorderItem.UpdateState();
 
-            if (m_ControllerSettings.InvalidContextBecauseOfAccumulation())
-            {
-                ShowMessageInStatusBar("You can only use one active Recorder at a time when you capture accumulation.", MessageType.Error);
-                m_State = State.AccumulationErrors;
-                // Flag all the recorders that support accumulation with a warning (important to perform this after calling UpdateState on all items)
-                foreach (var recorderItem in m_RecordingListItem.items)
-                {
-                    if (recorderItem.settings.Enabled)
-                    {
-                        recorderItem.state = RecorderItem.State.HasErrors;
-                    }
-                }
-                return;
-            }
             if (m_State == State.AccumulationErrors)
             {
                 // There were accumulation errors but now the context has been fixed. Return to idle state.
@@ -884,7 +870,7 @@ namespace UnityEditor.Recorder
                 }
                 else
                 {
-                    SetRecordButtonsEnabled(!EditorUtility.scriptCompilationFailed && !m_ControllerSettings.InvalidContextBecauseOfAccumulation());
+                    SetRecordButtonsEnabled(!EditorUtility.scriptCompilationFailed);
                 }
             }
             else

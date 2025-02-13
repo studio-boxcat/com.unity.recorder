@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor.Recorder.Timeline;
 using UnityEngine;
 
 namespace UnityEditor.Recorder
@@ -35,51 +34,8 @@ namespace UnityEditor.Recorder
 
         void StartRecording()
         {
-            var fail = false;
-            var wantsAccumulation = UnityHelpers.CaptureAccumulation(session.settings);
-
-            //Accumulation can be enabled only when there are no recorders recording
-            if (wantsAccumulation &&
-                (RecorderPlayableBehaviour.recordingWithAccumulation ||
-                 RecorderPlayableBehaviour.recordingWithoutAccumulation))
-            {
-                Debug.LogError(
-                    $"{session.settings.name}: Cannot start this recording with accumulation because another recording is already running.");
-                fail = true;
-            }
-
-            if (!fail && RecorderPlayableBehaviour.recordingWithAccumulation)
-            {
-                Debug.LogError(
-                    "Cannot start the recording session because a pre-existing session with accumulation is present.");
-                fail = true;
-            }
-
-            if (!fail)
-            {
-                var res = session.BeginRecording();
-                fail = !res;
-#if UNITY_EDITOR
-                if (!res)
-                {
-                }
-                else
-                {
-                    if (wantsAccumulation)
-                    {
-                        RecorderPlayableBehaviour.recordingWithAccumulation = true;
-                    }
-                    else
-                    {
-                        RecorderPlayableBehaviour.recordingWithoutAccumulation = true;
-                    }
-                }
-            }
-#endif
-            if (fail)
-            {
-                DestroyImmediate(this);
-            }
+            var res = session.BeginRecording();
+            if (!res) DestroyImmediate(this);
         }
 
         public void LateUpdate()

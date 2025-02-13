@@ -180,12 +180,6 @@ namespace UnityEditor.Recorder
             base.GetWarnings(warnings);
             var errors = new List<string>();
             ValidateRecording(errors, warnings);
-            if (CanCaptureAlpha() && captureAlpha)
-            {
-#if HDRP_AVAILABLE
-                HdrpHelper.CheckRenderPipelineAssetAlphaSupport(warnings);
-#endif
-            }
         }
 
         bool IResolutionUser.IsOutputResolutionContradictory

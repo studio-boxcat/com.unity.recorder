@@ -13,7 +13,6 @@ namespace UnityEditor.Recorder
         {
             internal static readonly GUIContent FormatLabel = new GUIContent("Media File Format", "The file encoding format of the recorded output.");
             internal static readonly GUIContent CaptureAlphaLabel = new GUIContent("Include Alpha", "To include the alpha channel in the recording.\n\nIn the High Definition Render Pipeline (HDRP), you need to set the buffer format to R16G16B16A16.");
-            internal static readonly GUIContent CLabel = new GUIContent("Compression", "The data compression method to apply when using the EXR format.");
             internal static readonly GUIContent JpegQualityLabel = new GUIContent("Quality", "The JPEG encoding quality level.");
         }
 

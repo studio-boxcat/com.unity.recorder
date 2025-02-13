@@ -42,11 +42,6 @@ namespace UnityEditor.Recorder
                 UnityObject.DestroyImmediate(obj, allowDestroyingAssets);
         }
 
-        internal static bool IsPlaying()
-        {
-            return EditorApplication.isPlaying;
-        }
-
         internal static GameObject CreateRecorderGameObject(string name)
         {
             var gameObject = new GameObject(name) { tag = "EditorOnly" };
@@ -97,50 +92,6 @@ namespace UnityEditor.Recorder
         }
 
         /// <summary>
-        /// A label including the version of the package, for use in encoder metadata tags for instance.
-        /// </summary>
-        internal static string PackageDescription
-        {
-            get
-            {
-                return "Recorder " + PackageVersion;
-            }
-        }
-
-        private static ListRequest LsPackages = Client.List();
-        private static string PackageVersion
-        {
-            get
-            {
-                if (m_PackageVersion.Length == 0)
-                {
-                    // Read the package version
-                    var packageInfo = PackageManager.PackageInfo.FindForAssetPath("Packages/com.unity.recorder");
-                    m_PackageVersion = packageInfo.version;
-                }
-                return m_PackageVersion;
-            }
-        }
-        private static string m_PackageVersion = "";
-
-        /// <summary>
-        /// Convert an RGBA32 texture to an RGB24 one.
-        /// </summary>
-        /// <param name="tex"></param>
-        /// <returns></returns>
-        internal static Texture2D RGBA32_to_RGB24(Texture2D tex)
-        {
-            if (tex.format != TextureFormat.RGBA32)
-                throw new System.Exception($"Expecting RGBA32 format, received {tex.format}");
-
-            Texture2D newTex = new Texture2D(tex.width, tex.height, TextureFormat.RGB24, false);
-            newTex.SetPixels(tex.GetPixels());
-            newTex.Apply();
-
-            return newTex;
-        }
-
-        /// <summary>
         /// Load an asset from the current package's Editor/Assets folder.
         /// </summary>
         /// <param name="relativeFilePathWithExtension">The relative filename inside the Editor/Assets folder, without
@@ -158,17 +109,6 @@ namespace UnityEditor.Recorder
             else if (logError)
                 Debug.LogError($"Local asset file {fullPathInProject} not found.");
             return result;
-        }
-
-        /// <summary>
-        /// Are we currently using the High Definition Render Pipeline.
-        /// </summary>
-        /// <returns>bool</returns>
-        internal static bool UsingHDRP()
-        {
-            var pipelineAsset = GraphicsSettings.currentRenderPipeline;
-            var usingHDRP = pipelineAsset != null && pipelineAsset.GetType().FullName.Contains("High");
-            return usingHDRP;
         }
 
         /// <summary>
@@ -217,58 +157,6 @@ namespace UnityEditor.Recorder
         {
             var pipelineAsset = GraphicsSettings.currentRenderPipeline;
             return pipelineAsset == null;
-        }
-
-        /// <summary>
-        /// Are we currently capturing SubFrames.
-        /// </summary>
-        /// <returns>bool</returns>
-        internal static bool CaptureAccumulation(RecorderSettings settings)
-        {
-#if HDRP_AVAILABLE
-            var hdPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
-            if (hdPipeline != null && settings.IsAccumulationSupported())
-            {
-                IAccumulation accumulation = settings as IAccumulation;
-                if (accumulation != null)
-                {
-                    AccumulationSettings aSettings = accumulation.GetAccumulationSettings();
-                    if (aSettings != null)
-                        return aSettings.CaptureAccumulation;
-                }
-            }
-#endif
-            return false;
-        }
-
-        /// <summary>
-        /// Returns the color space of the specified graphics format.
-        /// </summary>
-        /// <param name="format">The graphics format to probe.</param>
-        /// <returns></returns>
-        internal static ImageRecorderSettings.ColorSpaceType GetColorSpaceType(GraphicsFormat format)
-        {
-            // All sRGB formats end with "_SRGB"?
-            return format.ToString().EndsWith("_SRGB") ? ImageRecorderSettings.ColorSpaceType.sRGB_sRGB : ImageRecorderSettings.ColorSpaceType.Unclamped_linear_sRGB;
-        }
-
-        /// <summary>
-        /// Returns the Recorder-specific color space matching the Unity color space.
-        /// </summary>
-        /// <param name="space">The Unity color space to probe</param>
-        /// <returns></returns>
-        /// <exception cref="InvalidEnumArgumentException">Throws an exception if the enum value is not as expected.</exception>
-        internal static ImageRecorderSettings.ColorSpaceType GetColorSpaceType(ColorSpace space)
-        {
-            switch (space)
-            {
-                case ColorSpace.Gamma:
-                    return ImageRecorderSettings.ColorSpaceType.sRGB_sRGB;
-                case ColorSpace.Linear:
-                    return ImageRecorderSettings.ColorSpaceType.Unclamped_linear_sRGB;
-                default:
-                    throw new InvalidEnumArgumentException($"Unexpected color space '{space}'");
-            }
         }
 
         /// <summary>
