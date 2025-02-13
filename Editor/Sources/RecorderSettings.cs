@@ -204,32 +204,6 @@ namespace UnityEditor.Recorder
         }
 
         /// <summary>
-        /// Tests if the Recorder is correctly configured.
-        /// </summary>
-        /// <param name="errors">List of errors encountered.</param>
-        /// <returns>True if there are no errors, False otherwise.</returns>
-        [Obsolete("Please use methods GetErrors() and GetWarnings()")]
-        protected internal virtual bool ValidityCheck(List<string> errors)
-        {
-            var ok = true;
-
-            if (InputsSettings != null)
-            {
-                var inputErrors = new List<string>();
-#pragma warning disable 618
-                var valid = InputsSettings.All(x => x.ValidityCheck(inputErrors));
-#pragma warning restore 618
-                if (!valid)
-                {
-                    errors.AddRange(inputErrors);
-                    ok = false;
-                }
-            }
-
-            return ok;
-        }
-
-        /// <summary>
         /// Tests if the Recorder has any errors.
         /// </summary>
         /// <param name="errors">List of errors encountered.</param>
@@ -350,13 +324,8 @@ namespace UnityEditor.Recorder
         internal virtual bool HasWarnings()
         {
             var warnings = new List<string>();
-            var oldErrors = new List<string>();
-#pragma warning disable 618
-            // In the old API, errors were meant to be handled as non-blocking warnings
-            ValidityCheck(oldErrors);
-#pragma warning restore 618
             GetWarnings(warnings);
-            return oldErrors.Count > 0 || warnings.Count > 0;
+            return warnings.Count > 0;
         }
 
         /// <summary>

@@ -166,15 +166,7 @@ namespace UnityEditor.Recorder
         /// </summary>
         protected virtual void OnValidateSettingsGUI()
         {
-            var oldWarnings = new List<string>();
             var targetSettings = target as RecorderSettings;
-#pragma warning disable 618
-            if (!targetSettings.ValidityCheck(oldWarnings))
-#pragma warning restore 618
-            {
-                foreach (var e in oldWarnings)
-                    EditorGUILayout.HelpBox(e, MessageType.Warning);
-            }
 
             var infoMessages = new List<string>();
             var warnings = new List<string>();
@@ -192,7 +184,7 @@ namespace UnityEditor.Recorder
             foreach (var e in errors)
                 EditorGUILayout.HelpBox(e, MessageType.Error);
 
-            if (oldWarnings.Count > 0 || warnings.Count > 0 || errors.Count > 0)
+            if (warnings.Count > 0 || errors.Count > 0)
                 InvokeRecorderValidated();
         }
 

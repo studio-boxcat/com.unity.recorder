@@ -138,16 +138,6 @@ namespace UnityEditor.Recorder
             if (Recording)
                 throw new Exception("Already recording!");
 
-            // Log old warnings (non-blocking)
-            var oldWarnings = new List<string>();
-#pragma warning disable 618
-            if (!session.settings.ValidityCheck(oldWarnings))
-#pragma warning restore 618
-            {
-                foreach (var w in oldWarnings)
-                    ConsoleLogMessage(w, LogType.Warning);
-            }
-
             // Log non-blocking warnings
             var warnings = new List<string>();
             session.settings.GetWarnings(warnings);
