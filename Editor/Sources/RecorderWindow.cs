@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEditor.Recorder.Input;
@@ -552,6 +553,12 @@ namespace UnityEditor.Recorder
         public bool IsRecording()
         {
             return m_State == State.Recording || m_State == State.WaitingForPlayModeToStartRecording;
+        }
+
+        [UsedImplicitly] // Used by RecordingCheck.
+        public bool EventuallyStartRecording()
+        {
+            return m_State is State.Recording or State.WaitingForPlayModeToStartRecording or State.WaitingForScenesData;
         }
 
         /// <summary>
