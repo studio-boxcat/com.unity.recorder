@@ -20,7 +20,6 @@ namespace UnityEditor.Recorder
         static bool frameRateCapped; // Used to have only 1 Recorder cap framerate when multiple are trying to do.
         Unity.Profiling.ProfilerMarker capFPSMarker = new ProfilerMarker("Unity.Recorder.CapFPS");
 
-        int m_SubFrameIndex = 0;
         int m_FrameIndex = 0;
         int m_InitialFrame = 0;
         float m_FPSTimeStart;

@@ -251,8 +251,6 @@ namespace UnityEditor.Recorder
             High
         }
 
-        [SerializeField] VideoRecorderOutputFormat outputFormat = VideoRecorderOutputFormat.MP4;
-
         [SerializeField, FormerlySerializedAs("videoBitRateMode")]
         VideoEncodingQuality encodingQuality = VideoEncodingQuality.High;
 
