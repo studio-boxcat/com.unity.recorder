@@ -63,8 +63,6 @@ namespace UnityEditor.Recorder
             SceneHook.PrepareSessionRoot();
             m_RecordingSessions = new List<RecordingSession>();
 
-            int numberOfSubframeRecorder = 0;
-            int numberOfRecorderEnabled = 0;
             ValidateRecorderNames();
             ValidateRecorderResolutions();
 
@@ -94,11 +92,6 @@ namespace UnityEditor.Recorder
                         Debug.Log("Ignoring disabled recorder '" + recorderSetting.name + "'");
 
                     continue;
-                }
-
-                if (recorderSetting.Enabled)
-                {
-                    numberOfRecorderEnabled++;
                 }
 
                 var session = m_SceneHook.CreateRecorderSessionWithRecorderComponent(recorderSetting);
