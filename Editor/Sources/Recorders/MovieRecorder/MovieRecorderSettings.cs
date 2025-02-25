@@ -251,9 +251,6 @@ namespace UnityEditor.Recorder
             High
         }
 
-        [SerializeField, FormerlySerializedAs("videoBitRateMode")]
-        VideoEncodingQuality encodingQuality = VideoEncodingQuality.High;
-
         /// <summary>
         /// The index of the currently selected container format in the list of formats that the registered encoders support.
         /// </summary>
