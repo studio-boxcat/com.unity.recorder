@@ -6,7 +6,6 @@ using JetBrains.Annotations;
 using UnityEditor.Recorder.Encoder;
 using UnityEditor.Recorder.Input;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [assembly: InternalsVisibleTo("Unity.Recorder.TestsCodebase")]
 namespace UnityEditor.Recorder

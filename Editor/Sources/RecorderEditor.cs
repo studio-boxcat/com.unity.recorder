@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Recorder.Encoder;
-using UnityEditor.Recorder.Input;
 using UnityEngine;
 
 namespace UnityEditor.Recorder

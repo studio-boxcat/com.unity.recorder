@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using System.Reflection;
 using Unity.Collections;
 
 namespace UnityEditor.Recorder.Input

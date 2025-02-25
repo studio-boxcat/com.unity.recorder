@@ -1,4 +1,3 @@
-using UnityEditor.Recorder;
 using UnityEngine;
 
 namespace UnityEditor.Recorder
