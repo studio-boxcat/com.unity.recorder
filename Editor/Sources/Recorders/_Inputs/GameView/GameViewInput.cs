@@ -64,7 +64,6 @@ namespace UnityEditor.Recorder.Input
 
         protected internal override void BeginRecording(RecordingSession session)
         {
-            GameViewSize.SwapMainPlayViewToGameView();
             OutputWidth = scSettings.OutputWidth;
             OutputHeight = scSettings.OutputHeight;
 

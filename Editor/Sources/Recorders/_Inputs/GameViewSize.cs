@@ -5,19 +5,6 @@ namespace UnityEditor.Recorder.Input
 {
     static partial class GameViewSize
     {
-        public static bool IsMainPlayViewGameView()
-        {
-            return PlayModeWindow.GetViewType() == PlayModeWindow.PlayModeViewTypes.GameView;
-        }
-
-        public static void SwapMainPlayViewToGameView()
-        {
-            if (IsMainPlayViewGameView())
-                return;
-
-            PlayModeWindow.SetViewType(PlayModeWindow.PlayModeViewTypes.GameView);
-        }
-
         public static void DisableMaxOnPlay()
         {
             PlayModeWindow.SetPlayModeFocused(true);
