@@ -555,7 +555,7 @@ namespace UnityEditor.Recorder
             return m_State == State.Recording || m_State == State.WaitingForPlayModeToStartRecording;
         }
 
-        [UsedImplicitly] // Used by RecordingCheck.
+        // Reached from outside the package through RecorderHelper.IsRecording, never named directly.
         public bool EventuallyStartRecording()
         {
             return m_State is State.Recording or State.WaitingForPlayModeToStartRecording or State.WaitingForScenesData;
